@@ -126,7 +126,7 @@ export const Hero = ({ onSectionChange }: HeroProps) => {
                 className="border-2 border-primary bg-transparent hover:bg-primary hover:text-primary-foreground text-primary font-semibold px-8 py-6 text-lg neon-glow transition-all duration-300 hover:scale-105"
                 onClick={() => onSectionChange?.("contact")}
               >
-                Hire Me
+                Hire Me !
               </Button>
             </div>
           </div>
