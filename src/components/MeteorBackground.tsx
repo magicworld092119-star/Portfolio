@@ -37,11 +37,12 @@ const MeteorBackground: React.FC = () => {
     const meteorGroup = new THREE.Group();
     scene.add(meteorGroup);
 
+    // Shared geometry & material for meteors to avoid continuous memory allocation
+    const meteorGeometry = new THREE.SphereGeometry(0.07, 16, 16);
+    const meteorMaterial = new THREE.MeshBasicMaterial({ color: 0xffd966 });
+
     const createMeteor = () => {
-      // Bigger “rocket-like” meteor
-      const geometry = new THREE.SphereGeometry(0.07, 16, 16); // size increased
-      const material = new THREE.MeshBasicMaterial({ color: 0xffd966 }); // brighter color
-      const meteor = new THREE.Mesh(geometry, material);
+      const meteor = new THREE.Mesh(meteorGeometry, meteorMaterial);
 
       // Glow effect (light around the meteor)
       const glow = new THREE.PointLight(0xffaa33, 2, 5);
@@ -69,8 +70,11 @@ const MeteorBackground: React.FC = () => {
 
     const clock = new THREE.Clock();
     let spawnTimer = 0;
+    let animationFrameId: number;
 
     const animate = () => {
+      animationFrameId = requestAnimationFrame(animate);
+
       const delta = clock.getDelta();
       spawnTimer += delta;
 
@@ -80,21 +84,28 @@ const MeteorBackground: React.FC = () => {
         spawnTimer = 0;
       }
 
-      meteorGroup.children.forEach((meteor) => {
+      for (let i = meteorGroup.children.length - 1; i >= 0; i--) {
+        const meteor = meteorGroup.children[i] as THREE.Mesh;
         meteor.position.add(meteor.userData.velocity);
         meteor.userData.life -= delta;
-      });
 
-      // Clean up meteors after lifetime expires
-      meteorGroup.children = meteorGroup.children.filter((m) => m.userData.life > 0);
+        if (meteor.userData.life <= 0) {
+          meteor.traverse((child) => {
+            if (child instanceof THREE.Light) {
+              child.dispose();
+            }
+          });
+          meteorGroup.remove(meteor);
+        }
+      }
 
       stars.rotation.y += 0.0006;
       renderer.render(scene, camera);
-      requestAnimationFrame(animate);
     };
     animate();
 
     const handleResize = () => {
+      if (!mount) return;
       camera.aspect = mount.clientWidth / mount.clientHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(mount.clientWidth, mount.clientHeight);
@@ -102,8 +113,26 @@ const MeteorBackground: React.FC = () => {
     window.addEventListener("resize", handleResize);
 
     return () => {
+      cancelAnimationFrame(animationFrameId);
       window.removeEventListener("resize", handleResize);
-      mount.removeChild(renderer.domElement);
+
+      // Clean up meteors
+      meteorGroup.children.forEach((child) => {
+        child.traverse((obj) => {
+          if (obj instanceof THREE.Light) obj.dispose();
+        });
+      });
+      meteorGroup.clear();
+
+      meteorGeometry.dispose();
+      meteorMaterial.dispose();
+      starGeometry.dispose();
+      starMaterial.dispose();
+      renderer.dispose();
+
+      if (mount && renderer.domElement && mount.contains(renderer.domElement)) {
+        mount.removeChild(renderer.domElement);
+      }
     };
   }, []);
 

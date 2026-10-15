@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import Particles from "@/components/Particles"; // ✅ Import the Particles
+import { ENV } from "@/config/env";
 export const Contact = () => {
   const { toast } = useToast();
   const [formData, setFormData] = useState({
@@ -14,6 +15,7 @@ export const Contact = () => {
     email: "",
     message: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,17 +29,22 @@ export const Contact = () => {
       return;
     }
 
+    setIsSubmitting(true);
+
     // ✉️ Send Email using EmailJS
     emailjs
       .send(
-        "service_lszb8eo", // 🔹 Replace with your EmailJS Service ID
-        "template_mcz3j65", // 🔹 Replace with your Template ID
+        ENV.EMAILJS_SERVICE_ID,
+        ENV.EMAILJS_TEMPLATE_ID,
         {
           from_name: formData.name,
+          name: formData.name,
           from_email: formData.email,
+          email: formData.email,
+          reply_to: formData.email,
           message: formData.message,
         },
-        "ZjTMyHD_sv-_6XF6d" // 🔹 Replace with your Public Key
+        ENV.EMAILJS_PUBLIC_KEY
       )
       .then(
         () => {
@@ -55,17 +62,19 @@ export const Contact = () => {
             variant: "destructive",
           });
         }
-      );
+      )
+      .finally(() => {
+        setIsSubmitting(false);
+      });
   };
 
   const contactInfo = [
-    { icon: Mail, label: "Email", value: "helloworld01280128@gmail.com" },
-    { icon: Phone, label: "Phone", value: "7995989510" },
-    { icon: MapPin, label: "Location", value: "Meerpet, Hyderabad" },
+    { icon: Mail, label: "Email", value: "sriram.mail.in@gmail.com" },
+    { icon: MapPin, label: "Location", value: "Hyderabad" },
   ];
 
   return (
-    <section className="py-12 min-h-[calc(100vh-8rem)] flex items-center bg-secondary/20">
+    <section className="relative overflow-hidden py-12 min-h-[calc(100vh-8rem)] flex items-center bg-secondary/20">
       <Particles
         particleColors={["#ff0000", "#ffffff", "#ff4d4d"]}
         particleCount={250}
@@ -76,7 +85,7 @@ export const Contact = () => {
         alphaParticles={true}
         disableRotation={false}
       />
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 relative z-10">
         <div className="text-center mb-12 fade-in-up">
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
             Get In <span className="text-primary neon-text">Touch</span>
@@ -142,10 +151,11 @@ export const Contact = () => {
               <Button
                 type="submit"
                 size="lg"
-                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold neon-glow"
+                disabled={isSubmitting}
+                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold neon-glow disabled:opacity-50"
               >
                 <Send className="w-5 h-5 mr-2" />
-                Send Message
+                {isSubmitting ? "Sending..." : "Send Message"}
               </Button>
             </form>
           </Card>

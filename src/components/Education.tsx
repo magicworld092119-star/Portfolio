@@ -7,7 +7,7 @@ const education = [
     degree: "Bachelor of Science in Computer Science",
     institution: "Keshav Memorial Institution Of Technology",
     description:
-      "Focused on software engineering, web development, and artificial intelligence. Graduated with honors.",
+      "Focused on software engineering, web development, and artificial intelligence. Maintaining strong academic excellence.",
   },
   {
     year: "2022 - 2025",
@@ -25,8 +25,8 @@ const education = [
 
 export const Education = () => {
   return (
-    <section className="py-12 min-h-[calc(100vh-8rem)] flex items-center bg-secondary/20">
-            <Particles
+    <section className="relative overflow-hidden py-12 min-h-[calc(100vh-8rem)] flex items-center bg-secondary/20">
+      <Particles
         particleColors={["#ff0000", "#ffffff", "#ff4d4d"]}
         particleCount={250}
         particleSpread={8}
@@ -36,7 +36,7 @@ export const Education = () => {
         alphaParticles={true}
         disableRotation={false}
       />
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 relative z-10">
         <div className="text-center mb-12 fade-in-up">
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
             My <span className="text-primary neon-text">Education</span>
@@ -46,35 +46,42 @@ export const Education = () => {
 
         <div className="max-w-4xl mx-auto relative">
           {/* Timeline Line */}
-          <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-0.5 bg-primary/30 neon-glow" />
+          <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-0.5 bg-primary/30 neon-glow -translate-x-1/2" />
 
           <div className="space-y-12">
-            {education.map((item, index) => (
-              <div
-                key={index}
-                className={`relative fade-in-up ${
-                  index % 2 === 0 ? "md:ml-auto md:pl-12" : "md:mr-auto md:pr-12"
-                } md:w-1/2`}
-                style={{ animationDelay: `${index * 0.2}s` }}
-              >
-                {/* Timeline Dot */}
-                <div className="absolute left-6 md:left-1/2 top-6 w-4 h-4 rounded-full bg-primary neon-glow transform -translate-x-1/2" />
+            {education.map((item, index) => {
+              const isEven = index % 2 === 0;
+              return (
+                <div
+                  key={index}
+                  className={`relative fade-in-up ${
+                    isEven ? "md:ml-auto md:pl-12" : "md:mr-auto md:pr-12"
+                  } md:w-1/2`}
+                  style={{ animationDelay: `${index * 0.2}s` }}
+                >
+                  {/* Timeline Dot: aligned with the line on both mobile (left-8) and desktop (center line) */}
+                  <div
+                    className={`absolute top-6 w-4 h-4 rounded-full bg-primary neon-glow transform -translate-x-1/2 left-8 ${
+                      isEven ? "md:left-0" : "md:left-full"
+                    }`}
+                  />
 
-                <Card className="ml-16 md:ml-0 p-6 bg-card/50 border-2 border-primary/20 hover:border-primary transition-all duration-300 hover-lift">
-                  <div className="flex items-start gap-4">
-                    <div className="p-3 bg-primary/10 rounded-lg">
-                      <GraduationCap className="w-6 h-6 text-primary" />
+                  <Card className="ml-16 md:ml-0 p-6 bg-card/50 border-2 border-primary/20 hover:border-primary transition-all duration-300 hover-lift">
+                    <div className="flex items-start gap-4">
+                      <div className="p-3 bg-primary/10 rounded-lg">
+                        <GraduationCap className="w-6 h-6 text-primary" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="text-primary text-sm font-semibold mb-1">{item.year}</div>
+                        <h3 className="text-xl font-bold mb-1">{item.degree}</h3>
+                        <h4 className="text-muted-foreground font-medium mb-3">{item.institution}</h4>
+                        <p className="text-muted-foreground text-sm">{item.description}</p>
+                      </div>
                     </div>
-                    <div className="flex-1">
-                      <div className="text-primary text-sm font-semibold mb-1">{item.year}</div>
-                      <h3 className="text-xl font-bold mb-1">{item.degree}</h3>
-                      <h4 className="text-muted-foreground font-medium mb-3">{item.institution}</h4>
-                      <p className="text-muted-foreground text-sm">{item.description}</p>
-                    </div>
-                  </div>
-                </Card>
-              </div>
-            ))}
+                  </Card>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

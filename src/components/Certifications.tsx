@@ -16,7 +16,7 @@ const certifications = [
     date: "2025",
     description:
       "Received certification for successfully completing a diploma mini project. Gained practical experience in software development and teamwork.",
-    link: "/certificates/head.jpg", // 🔗 Replace with your actual certificate link
+    link: "https://example.com", // 🔗 Replace with your actual certificate link
   },
   {
     title: "Web Development Certification",

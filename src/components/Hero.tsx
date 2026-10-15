@@ -18,10 +18,11 @@ export const Hero = ({ onSectionChange }: HeroProps) => {
 
   useEffect(() => {
     const role = roles[currentRole];
+    let holdTimer: ReturnType<typeof setTimeout> | undefined;
     const speed = isDeleting ? 50 : 100;
     const timer = setTimeout(() => {
       if (!isDeleting && displayText === role) {
-        setTimeout(() => setIsDeleting(true), 2000);
+        holdTimer = setTimeout(() => setIsDeleting(true), 2000);
       } else if (isDeleting && displayText === "") {
         setIsDeleting(false);
         setCurrentRole((prev) => (prev + 1) % roles.length);
@@ -33,7 +34,11 @@ export const Hero = ({ onSectionChange }: HeroProps) => {
         );
       }
     }, speed);
-    return () => clearTimeout(timer);
+
+    return () => {
+      clearTimeout(timer);
+      if (holdTimer) clearTimeout(holdTimer);
+    };
   }, [displayText, isDeleting, currentRole]);
 
   const socialLinks = [
@@ -65,15 +70,15 @@ export const Hero = ({ onSectionChange }: HeroProps) => {
         <div className="grid md:grid-cols-2 gap-12 items-center">
           {/* Left - Image */}
           <div className="flex justify-center md:justify-start fade-in-up" style={{ animationDelay: "0.2s" }}>
-            <div className="relative translate-x-8 md:translate-x-12">
-              <div className="absolute inset-0 flex items-center justify-center translate-x-4">
-                <div className="w-[400px] h-[400px] rounded-full bg-primary/30 blur-3xl glow-pulse" />
+            <div className="relative md:translate-x-12">
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] md:w-[400px] md:h-[400px] rounded-full bg-primary/30 blur-3xl glow-pulse" />
               </div>
               <div className="relative z-10">
                 <img
                   src={heroCharacter}
                   alt="Sriram - Developer"
-                  className="w-[400px] h-[400px] object-cover rounded-full border-4 border-primary/20"
+                  className="w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] md:w-[400px] md:h-[400px] object-cover rounded-full border-4 border-primary/20"
                 />
               </div>
             </div>
@@ -105,7 +110,7 @@ export const Hero = ({ onSectionChange }: HeroProps) => {
                   size="icon"
                   className="rounded-full border-primary/50 hover:border-primary hover:bg-primary/10 hover:scale-110 transition-all duration-300 neon-glow"
                   onClick={() => {
-                    if (social.external) window.open(social.href, "_blank");
+                    if (social.external) window.open(social.href, "_blank", "noopener,noreferrer");
                     else onSectionChange?.(social.href);
                   }}
                   aria-label={social.label}

@@ -55,7 +55,7 @@ const projects = [
 
 export const Projects = () => {
   return (
-    <section className="py-12 min-h-[calc(100vh-8rem)] flex items-center bg-secondary/20">
+    <section className="relative overflow-hidden py-12 min-h-[calc(100vh-8rem)] flex items-center bg-secondary/20">
       <Particles
         particleColors={["#ff0000", "#ffffff", "#ff4d4d"]}
         particleCount={250}
@@ -66,7 +66,7 @@ export const Projects = () => {
         alphaParticles={true}
         disableRotation={false}
       />
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 relative z-10">
         {/* Section Title */}
         <div className="text-center mb-12 fade-in-up">
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
@@ -120,7 +120,7 @@ export const Projects = () => {
                       !project.codeLink ? "opacity-50 cursor-not-allowed" : ""
                     }`}
                     onClick={() =>
-                      project.codeLink && window.open(project.codeLink, "_blank")
+                      project.codeLink && window.open(project.codeLink, "_blank", "noopener,noreferrer")
                     }
                     disabled={!project.codeLink}
                   >
@@ -134,7 +134,7 @@ export const Projects = () => {
                       !project.liveLink ? "opacity-50 cursor-not-allowed" : ""
                     }`}
                     onClick={() =>
-                      project.liveLink && window.open(project.liveLink, "_blank")
+                      project.liveLink && window.open(project.liveLink, "_blank", "noopener,noreferrer")
                     }
                     disabled={!project.liveLink}
                   >

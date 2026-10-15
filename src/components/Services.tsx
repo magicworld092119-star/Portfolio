@@ -27,7 +27,7 @@ const services = [
 
 export const Services = () => {
   return (
-    <section className="py-12 min-h-[calc(100vh-8rem)] flex items-center">
+    <section className="relative overflow-hidden py-12 min-h-[calc(100vh-8rem)] flex items-center">
       <Particles
         particleColors={["#ff0000", "#ffffff", "#ff4d4d"]}
         particleCount={250}
@@ -38,7 +38,7 @@ export const Services = () => {
         alphaParticles={true}
         disableRotation={false}
       />
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 relative z-10">
         <div className="text-center mb-12 fade-in-up">
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
             My <span className="text-primary neon-text">Services</span>
